@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Radio</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #003d55;
+            /* background-image:url('junglist.gif');  */
+            color: rgb(255, 255, 255);
+            margin: 0;
+            padding: 40px 20px;
+            text-align: center;  
+        }
+          
+         img {width: 100%;
+              border-radius: 10px;
+              filter: sepia(50%) saturate(150%) contrast(90%);
+            
+            
+            }
+
+        h1 {color: #ffffff;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-weight: 700;
+            animation: color-glow 3s infinite alternate;
+            
+        }
+
+        h3 {
+            color: #ffffff;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            font-weight:lighter;
+                       
+        }
+
+        @keyframes color-glow {
+  0% {
+    text-shadow: 0 0 5px #ffffff,
+                 0 0 10px #ffffff,
+                 0 0 15px #ffffff;
+  }
+  50% {
+    text-shadow: 0 0 8px hsl(327, 100%, 50%),
+                 0 0 16px #ff0095,
+                 0 0 24px #ff0080;
+  }
+  100% {
+    text-shadow: 0 0 10px #00d4ff,
+                 0 0 20px #00d4ff,
+                 0 0 30px #00d4ff;
+  } }
+         
+        cite { font-weight: 500;
+            font-size: 16px;
+               color: rgb(255, 255, 255);}
+
+        .player {
+            background: #9c9c9c00;
+            /* background-image:url('junglist.gif'); */
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+
+        label {color: #ffffff; 
+               font-weight:700;
+               animation: color-glow 3s infinite alternate;
+        
+        }
+
+
+        p {font-size: 18px;
+            font-weight:light;
+           color: #ffffff;
+           font-weight: 900;
+        }
+
+        button {
+            background: #0059ff;
+            color: rgb(255, 255, 255);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 100;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 50%;
+        }
+        button:active {
+            background: #ff0000;
+            color: #ffffff;
+        }
+        input[type="range"] {
+            width: 100%;
+            margin: 15px 0;
+        }
+        .status {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: color-glow 3s infinite alternate;
+        }
+        .online {
+            color: #ff0062;
+            font-weight: 500;
+            font-size: 15px;
+            animation: smooth-blink 3s infinite;
+            animation: neon-blink 1s infinite alternate;
+        }
+
+@keyframes neon-blink {
+  0%, 100% {
+    text-shadow: 0 0 5px #ff0062,
+                0 0 10px #ff0062,
+                0 0 45px #ff0062;
+    opacity: 1;
+  }
+  50% {
+    text-shadow: 0 0 3px #ff0062,
+                0 0 6px #ff0062;
+    opacity: 0.1;
+  }
+}
+
+
+
+@keyframes smooth-blink {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 2px rgba(255, 0, 98, 0.5));
+  }
+  50% {
+    opacity: 0.6;
+    filter: none;
+  }
+}
+
+        .offline {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="player">
+        <h1>Hi ! Welcome to the first unstoppable relaxing music radio station in the Telegram miniapp
+        
+</h1>
+        <label><p><img src="junglist.gif"></p>You are listening to the best music!</label>
+        <p>
+        <button id="play-pause">Push Here 😎</button>
+ 
+        <div>
+        
+            <input type="range" id="volume" min="0" max="1" step="0.001" value="0.7" />
+        
+         <blockquote>
+  <p>
+    Stay hungry. Stay foolish.	
+  </p>
+</blockquote>
+<p><cite>Steve Jobs</cite></p>
+
+        
+
+            <h3>This is still a beta version of the radio. Every day we strive to make this app better and more convenient for you.
+
+To contact me with any questions, just write @slingerland and describe your question or suggestion as detailed as possible in one message.</h3>
+
+            
+        </div>
+
+        <div class="status" id="status">👽 Checking ...</div>
+    </div>
+
+    <audio id="audio" src="https://synthwave.stream.laut.fm/synthwave"></audio>
+    
+
+    <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram?.WebApp;
+        tg.ready();
+
+        const audio = document.getElementById('audio');
+        const playPauseBtn = document.getElementById('play-pause');
+        const volumeControl = document.getElementById('volume');
+        const status = document.getElementById('status');
+
+        let isPlaying = false;
+
+        // Громкость
+        audio.volume = volumeControl.value;
+        volumeControl.addEventListener('input', () => {
+            audio.volume = volumeControl.value;
+        });
+
+        // Статус
+        function updateStatus(online) {
+            if (online) {
+                status.innerHTML = '👍 <span class="online">On Air</span>';
+            } else {
+                status.innerHTML = '🤷‍♂️ <span class="offline">No Link</span>';
+            }
+        }
+
+        // Проверка статуса потока
+        function checkStream() {
+            fetch('https://synthwave.stream.laut.fm/synthwave', { method: 'HEAD', mode: 'no-cors' })
+                .then(() => updateStatus(true))
+                .catch(() => updateStatus(false));
+        }
+        checkStream();
+        setInterval(checkStream, 30000);
+
+        // Play / Pause
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                playPauseBtn.textContent = '😎 Play !';
+                isPlaying = false;
+                tg.HapticFeedback.impactOccurred('light');
+            } else {
+                audio.play().then(() => {
+                    playPauseBtn.textContent = '😎 Dont stop !';
+                    isPlaying = true;
+                    updateStatus(true);
+                    tg.HapticFeedback.impactOccurred('medium');
+                }).catch(err => {
+                    alert('Ошибка воспроизведения. Нажмите кнопку ещё раз.');
+                    console.error(err);
+                });
+            }
+        });
+
+        // Закрываем веб-апп, но аудио продолжает играть
+        // (важно: Telegram позволяет это!)
+    </script>
+
+    
+</body>
+
+</html>
+
+
+
+
+
