@@ -8,145 +8,143 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: #003d55;
-            /* background-image:url('junglist.gif');  */
-            color: rgb(255, 255, 255);
+            background: #181818;
+            color: rgb(255, 145, 0);
             margin: 0;
             padding: 40px 20px;
             text-align: center;  
         }
-          
-         img {width: 100%;
-              border-radius: 10px;
-              filter: sepia(50%) saturate(150%) contrast(90%);
-            
-            
-            }
 
-        h1 {color: #ffffff;
+        /* Стили для слайдера */
+        .slider-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slider-item {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .slider-item img {
+            width: 100%;
+            border-radius: 10px;
+            filter: sepia(50%) saturate(150%) contrast(90%);
+            display: block;
+        }
+
+        /* Индикаторы (точки) */
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #555;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .dot.active {
+            background: #ff0062;
+        }
+
+        h1 {
+            color: #c7c7c7;
             margin-bottom: 30px;
             font-size: 20px;
-            font-weight: 700;
-            animation: color-glow 3s infinite alternate;
-            
+            font-weight: 500;
+        }
+
+        h2 {
+            color: #0077ff;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-weight: 500;
         }
 
         h3 {
-            color: #ffffff;
+            color: #c7c7c7;
             border-radius: 10px;
             margin-bottom: 30px;
-            font-size: 14px;
-            font-weight:lighter;
-                       
+            font-size: 16px;
+            font-weight:100; 
         }
 
-        @keyframes color-glow {
-  0% {
-    text-shadow: 0 0 5px #ffffff,
-                 0 0 10px #ffffff,
-                 0 0 15px #ffffff;
-  }
-  50% {
-    text-shadow: 0 0 8px hsl(327, 100%, 50%),
-                 0 0 16px #ff0095,
-                 0 0 24px #ff0080;
-  }
-  100% {
-    text-shadow: 0 0 10px #00d4ff,
-                 0 0 20px #00d4ff,
-                 0 0 30px #00d4ff;
-  } }
-         
-        cite { font-weight: 500;
-            font-size: 16px;
-               color: rgb(255, 255, 255);}
+        p { 
+            font-weight: 500;
+            font-size: 18px;
+            color: #c7c7c7;
+        }
 
         .player {
-            background: #9c9c9c00;
-            /* background-image:url('junglist.gif'); */
+            background: #252525;
             border-radius: 10px;
             padding: 20px;
+            margin: 10px 0;
             max-width: 400px;
             margin: 0 auto;
+            
         }
 
-
-        label {color: #ffffff; 
-               font-weight:700;
-               animation: color-glow 3s infinite alternate;
-        
-        }
-
-
-        p {font-size: 18px;
-            font-weight:light;
-           color: #ffffff;
-           font-weight: 900;
+        label {
+            color: #818181; 
+            font-weight: 700;
         }
 
         button {
-            background: #0059ff;
-            color: rgb(255, 255, 255);
+            background: #001aff00;
+            color: rgb(0, 255, 200);
             border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 100;
-            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 24px;
+            font-weight: 700;
             cursor: pointer;
-            margin: 10px 0;
             width: 50%;
         }
+        
         button:active {
-            background: #ff0000;
+            background: #ff7b00;
             color: #ffffff;
+            width:auto;
+            border-radius: 5px;
         }
+        
         input[type="range"] {
-            width: 100%;
-            margin: 15px 0;
+             
+            width: 70%;
+            margin: 10px 0;
         }
+
+        
         .status {
             margin-top: 10px;
             font-size: 14px;
             font-weight: 500;
-            animation: color-glow 3s infinite alternate;
         }
+        
         .online {
-            color: #ff0062;
+            color: #88ff00;
             font-weight: 500;
             font-size: 15px;
-            animation: smooth-blink 3s infinite;
-            animation: neon-blink 1s infinite alternate;
         }
 
-@keyframes neon-blink {
-  0%, 100% {
-    text-shadow: 0 0 5px #ff0062,
-                0 0 10px #ff0062,
-                0 0 45px #ff0062;
-    opacity: 1;
-  }
-  50% {
-    text-shadow: 0 0 3px #ff0062,
-                0 0 6px #ff0062;
-    opacity: 0.1;
-  }
-}
-
-
-
-@keyframes smooth-blink {
-  0%, 100% {
-    opacity: 1;
-    filter: drop-shadow(0 0 2px rgba(255, 0, 98, 0.5));
-  }
-  50% {
-    opacity: 0.6;
-    filter: none;
-  }
-}
-
         .offline {
-            color: #ffffff;
+            color: #ff0000;
             font-weight: 500;
             font-size: 15px;
         }
@@ -154,38 +152,66 @@
 </head>
 <body>
     <div class="player">
-        <h1>Hi ! Welcome to the first unstoppable relaxing music radio station in the Telegram miniapp
+        <h1>Hi ! Welcome to the first unstoppable relaxing music radio station in the Telegram miniapp</h1>
+        <h2>EQ Soon</h2>
+        <!-- Слайдер вместо гифки -->
+        <!-- <label>You are listening to the best music!</label> -->
         
-</h1>
-        <label><p><img src="junglist.gif"></p>You are listening to the best music!</label>
+        <div class="slider-container">
+            <div class="slider" id="slider">
+                <div class="slider-item">
+                    <img src="car.gif" alt="Relaxing 1">
+                </div>
+                <div class="slider-item">
+                    <img src="junglist.gif" alt="Relaxing 2">
+                </div>
+                <div class="slider-item">
+                    <img src="car.gif" alt="Relaxing 1">
+                </div>
+                <div class="slider-item">
+                    <img src="junglist.gif" alt="Relaxing 2">
+                </div>
+                <div class="slider-item">
+                    <img src="car.gif" alt="Relaxing 1">
+                </div>
+                <div class="slider-item">
+                    <img src="junglist.gif" alt="Relaxing 2">
+                </div>
+                <div class="slider-item">
+                    <img src="car.gif" alt="Relaxing 1">
+                </div>
+                <div class="slider-item">
+                    <img src="junglist.gif" alt="Relaxing 2">
+                </div>
+                <div class="slider-item">
+                    <img src="car.gif" alt="Relaxing 1">
+                </div>
+                <div class="slider-item">
+                    <img src="junglist.gif" alt="Relaxing 2">
+                </div>
+                
+                
+            </div>
+        </div>
+        
+        <!-- Индикаторы (точки) -->
+        <div class="slider-dots" id="sliderDots"></div>
+        
         <p>
-        <button id="play-pause">Push Here 😎</button>
+            <button id="play-pause">Play</button>
+        </p>
  
         <div>
-        
-            <input type="range" id="volume" min="0" max="1" step="0.001" value="0.7" />
-        
-         <blockquote>
-  <p>
-    Stay hungry. Stay foolish.	
-  </p>
-</blockquote>
-<p><cite>Steve Jobs</cite></p>
+            <input type="range" id="volume" min="0" max="1" step="0.001" value="0.5" />
+            <p>Enjoy th music</p>
 
-        
-
-            <h3>This is still a beta version of the radio. Every day we strive to make this app better and more convenient for you.
-
-To contact me with any questions, just write @slingerland and describe your question or suggestion as detailed as possible in one message.</h3>
-
-            
+            <h3>This is still a beta version of the radio. Every day we strive to make this app better and more convenient for you. To contact me with any questions, just write @slingerland and describe your question or suggestion as detailed as possible in one message.</h3>
         </div>
 
         <div class="status" id="status">👽 Checking ...</div>
     </div>
 
     <audio id="audio" src="https://synthwave.stream.laut.fm/synthwave"></audio>
-    
 
     <script>
         // Инициализация Telegram WebApp
@@ -227,12 +253,12 @@ To contact me with any questions, just write @slingerland and describe your ques
         playPauseBtn.addEventListener('click', () => {
             if (isPlaying) {
                 audio.pause();
-                playPauseBtn.textContent = '😎 Play !';
+                playPauseBtn.textContent = 'Play !';
                 isPlaying = false;
                 tg.HapticFeedback.impactOccurred('light');
             } else {
                 audio.play().then(() => {
-                    playPauseBtn.textContent = '😎 Dont stop !';
+                    playPauseBtn.textContent = 'Dont stop !';
                     isPlaying = true;
                     updateStatus(true);
                     tg.HapticFeedback.impactOccurred('medium');
@@ -243,14 +269,97 @@ To contact me with any questions, just write @slingerland and describe your ques
             }
         });
 
+        // ========== ЛОГИКА СЛАЙДЕРА ==========
+        const slider = document.getElementById('slider');
+        const dotsContainer = document.getElementById('sliderDots');
+        
+        const items = document.querySelectorAll('.slider-item');
+        const totalItems = items.length;
+        let currentIndex = 0;
+        let autoSlideInterval;
+
+        // Создаем точки-индикаторы
+        items.forEach((_, index) => {
+            const dot = document.createElement('span');
+            dot.classList.add('dot');
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.dot');
+
+        // Обновление активной точки и позиции слайдера
+        function updateSlider() {
+            slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            dots.forEach((dot, index) => {
+                if (index === currentIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        // Переход к определенному слайду
+        function goToSlide(index) {
+            if (index < 0) {
+                currentIndex = totalItems - 1;
+            } else if (index >= totalItems) {
+                currentIndex = 0;
+            } else {
+                currentIndex = index;
+            }
+            updateSlider();
+            
+            // Легкая вибрация при переключении (для Telegram)
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        // Следующий слайд (для автоматической смены)
+        function nextSlide() {
+            goToSlide(currentIndex + 1);
+        }
+
+        // Запуск автоматической смены слайдов
+        function startAutoSlide() {
+            if (autoSlideInterval) clearInterval(autoSlideInterval);
+            autoSlideInterval = setInterval(nextSlide, 5000); // 5 секунд
+        }
+
+        // Остановка автоматической смены (при ручном переключении через точки)
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        // Перезапуск автослайда
+        function restartAutoSlide() {
+            stopAutoSlide();
+            startAutoSlide();
+        }
+
+        // Модифицируем goToSlide, чтобы перезапускать таймер при клике на точку
+        const originalGoToSlide = goToSlide;
+        goToSlide = function(index) {
+            originalGoToSlide(index);
+            restartAutoSlide(); // Перезапускаем таймер после ручного переключения
+        };
+
+        // Обновляем функцию nextSlide для использования новой goToSlide
+        nextSlide = function() {
+            goToSlide(currentIndex + 1);
+        };
+
+        // Инициализация слайдера
+        updateSlider();
+        startAutoSlide();
+
         // Закрываем веб-апп, но аудио продолжает играть
-        // (важно: Telegram позволяет это!)
+        // (Telegram позволяет это!)
     </script>
-
-    
 </body>
-
 </html>
+
 
 
 
