@@ -6,9 +6,11 @@
     <title>Radio</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background: #181818;
+            /* background-image: url(ird.jpg);  */
             color: rgb(255, 145, 0);
             margin: 0;
             padding: 40px 20px;
@@ -47,14 +49,14 @@
             justify-content: center;
             gap: 8px;
             margin-top: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background: #555;
+            background: #505050;
             cursor: pointer;
             transition: background 0.3s;
         }
@@ -64,31 +66,34 @@
         }
 
         h1 {
+            letter-spacing: 3px;
             color: #c7c7c7;
-            margin-bottom: 30px;
-            font-size: 20px;
-            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 30px;
+            font-weight: 1500;
         }
 
         h2 {
-            color: #0077ff;
+            color:#5a5a5a; 
+;
             margin-bottom: 30px;
-            font-size: 20px;
-            font-weight: 500;
+            font-size: 18px;
+            font-weight: 1000;
         }
 
         h3 {
-            color: #c7c7c7;
+            color:#5a5a5a;
             border-radius: 10px;
             margin-bottom: 30px;
             font-size: 16px;
-            font-weight:100; 
+            font-weight:1000; 
         }
 
         p { 
-            font-weight: 500;
+            font-weight: 1000;
             font-size: 18px;
-            color: #c7c7c7;
+            color:#5a5a5a; 
+;
         }
 
         .player {
@@ -101,9 +106,10 @@
             
         }
 
-        label {
-            color: #818181; 
-            font-weight: 700;
+        .label {
+            color: #5a5a5a; 
+            font-weight: 1000;
+            margin-bottom: 10px;
         }
 
         button {
@@ -111,8 +117,8 @@
             color: rgb(0, 255, 200);
             border: none;
             margin-top: 10px;
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 1000;
             cursor: pointer;
             width: 50%;
         }
@@ -134,26 +140,28 @@
         .status {
             margin-top: 10px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 1000;
         }
         
         .online {
             color: #88ff00;
-            font-weight: 500;
+            font-weight: 1000;
             font-size: 15px;
+            letter-spacing: 0px;
         }
 
         .offline {
-            color: #ff0000;
-            font-weight: 500;
+            color: #ff3c00;
+            font-weight: 1000;
             font-size: 15px;
+            letter-spacing: 0px;
         }
     </style>
 </head>
 <body>
     <div class="player">
-        <h1>Hi ! Welcome to the first unstoppable relaxing music radio station in the Telegram miniapp</h1>
-        <h2>EQ Soon</h2>
+        <h1>retrosynth</h1>
+        <h2>eq soon</h2>
         <!-- Слайдер вместо гифки -->
         <!-- <label>You are listening to the best music!</label> -->
         
@@ -198,17 +206,19 @@
         <div class="slider-dots" id="sliderDots"></div>
         
         <p>
-            <button id="play-pause">Play</button>
+            <button id="play-pause">play</button>
         </p>
- 
-        <div>
-            <input type="range" id="volume" min="0" max="1" step="0.001" value="0.5" />
-            <p>Enjoy th music</p>
+        
 
-            <h3>This is still a beta version of the radio. Every day we strive to make this app better and more convenient for you. To contact me with any questions, just write @slingerland and describe your question or suggestion as detailed as possible in one message.</h3>
+        <div class="label">songs of faith and devotion</div>
+        <div>
+            <input type="range" id="volume" min="0" max="1" step="0.001" value="0.7" />
+            <p>enjoy the music</p>
+
+            <h3>this is still a beta version of the radio. Every day we strive to make this app better and more convenient for you. to contact me with any questions, just write @slingerland and describe your question or suggestion as detailed as possible in one message.</h3>
         </div>
 
-        <div class="status" id="status">👽 Checking ...</div>
+        <div class="status" id="status">👽 checking ...</div>
     </div>
 
     <audio id="audio" src="https://synthwave.stream.laut.fm/synthwave"></audio>
@@ -234,9 +244,9 @@
         // Статус
         function updateStatus(online) {
             if (online) {
-                status.innerHTML = '👍 <span class="online">On Air</span>';
+                status.innerHTML = '<span class="online">on air</span>';
             } else {
-                status.innerHTML = '🤷‍♂️ <span class="offline">No Link</span>';
+                status.innerHTML = '<span class="offline">no link</span>';
             }
         }
 
@@ -359,9 +369,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
