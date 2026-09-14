@@ -10,25 +10,32 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background: #181818;
-            /* background-image: url(ird.jpg);  */
             color: rgb(255, 145, 0);
             margin: 0;
             padding: 40px 20px;
             text-align: center;  
         }
 
-        /* Стили для слайдера */
         .slider-container {
             position: relative;
             max-width: 400px;
             margin: 0 auto 20px;
             overflow: hidden;
             border-radius: 10px;
+            touch-action: pan-y;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .slider {
             display: flex;
             transition: transform 0.5s ease-in-out;
+            will-change: transform;
+        }
+
+        .slider.dragging,
+        .slider.no-transition {
+            transition: none !important;
         }
 
         .slider-item {
@@ -43,28 +50,6 @@
             display: block;
         }
 
-        /* Индикаторы (точки) */
-        .slider-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #505050;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .dot.active {
-            background: #ff0062;
-        }
-
         h1 {
             letter-spacing: 3px;
             color: #c7c7c7;
@@ -75,7 +60,6 @@
 
         h2 {
             color:#5a5a5a; 
-;
             margin-bottom: 30px;
             font-size: 18px;
             font-weight: 1000;
@@ -93,7 +77,6 @@
             font-weight: 1000;
             font-size: 18px;
             color:#5a5a5a; 
-;
         }
 
         .player {
@@ -103,7 +86,6 @@
             margin: 10px 0;
             max-width: 400px;
             margin: 0 auto;
-            
         }
 
         .label {
@@ -131,85 +113,607 @@
         }
         
         input[type="range"] {
-             
             width: 70%;
             margin: 10px 0;
         }
 
-        
         .status {
             margin-top: 10px;
             font-size: 14px;
             font-weight: 1000;
         }
         
-        .online {
-            color: #88ff00;
-            font-weight: 1000;
-            font-size: 15px;
-            letter-spacing: 0px;
+        .online { color: #88ff00; font-weight: 1000; font-size: 15px; }
+        .offline { color: #ff3c00; font-weight: 1000; font-size: 15px; }
+
+        /* ==========================================================
+           БАЗА БАННЕРА
+           ========================================================== */
+        .slider-item.banner-slide {
+            display: flex;
+            align-items: stretch;
         }
 
-        .offline {
-            color: #ff3c00;
-            font-weight: 1000;
-            font-size: 15px;
-            letter-spacing: 0px;
+        .banner {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 500 / 297;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            container-type: inline-size;
         }
+
+        .banner .content {
+            position: relative;
+            z-index: 5;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 6cqw 8cqw;
+            text-align: left;
+        }
+
+        .banner .badge {
+            display: inline-block;
+            padding: 1.2cqw 2.8cqw;
+            border-radius: 1.2cqw;
+            font-size: 2cqw;
+            font-weight: 600;
+            letter-spacing: 0.3cqw;
+            text-transform: uppercase;
+            width: fit-content;
+            margin-bottom: 2.4cqw;
+            animation: bn-slideIn 0.8s ease-out;
+        }
+
+        .banner .title {
+            font-size: 4.8cqw;
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 0 1.6cqw 0;
+            animation: bn-slideIn 0.8s ease-out 0.15s backwards;
+        }
+
+        .banner .subtitle {
+            font-size: 2.4cqw;
+            font-weight: 500;
+            opacity: 0.9;
+            margin: 0 0 3.2cqw 0;
+            max-width: 80%;
+            line-height: 1.4;
+            animation: bn-slideIn 0.8s ease-out 0.3s backwards;
+        }
+
+        .banner .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.6cqw;
+            padding: 2cqw 4cqw;
+            border-radius: 1.2cqw;
+            font-size: 2.4cqw;
+            font-weight: 700;
+            text-decoration: none;
+            width: fit-content;
+            transition: all 0.3s ease;
+            animation: bn-slideIn 0.8s ease-out 0.45s backwards;
+            cursor: pointer;
+        }
+
+        .banner .cta:active {
+            transform: scale(0.96);
+        }
+
+        .banner .cta svg {
+            width: 2.8cqw;
+            height: 2.8cqw;
+        }
+
+        @keyframes bn-slideIn {
+            from { opacity: 0; transform: translateY(4cqw); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .banner .shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            animation: bn-shine 5s ease-in-out infinite;
+            z-index: 4;
+            pointer-events: none;
+            transform: skewX(-20deg);
+        }
+
+        @keyframes bn-shine {
+            0%   { left: -100%; }
+            60%, 100% { left: 150%; }
+        }
+
+        /* ==========================================================
+           1. PURPLE BLOBS
+           ========================================================== */
+        .banner-v1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); }
+        .banner-v1 .blob {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.12);
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+        .banner-v1 .blob-1 { width: 44cqw; height: 44cqw; top: -14cqw; right: -10cqw; background: rgba(255,255,255,0.15); animation: bn-blob1 12s ease-in-out infinite; }
+        .banner-v1 .blob-2 { width: 32cqw; height: 32cqw; bottom: -12cqw; left: -8cqw; background: rgba(255,255,255,0.1); animation: bn-blob2 14s ease-in-out infinite; }
+        .banner-v1 .blob-3 { width: 18cqw; height: 18cqw; top: 45%; right: 12%; background: transparent; border: 0.4cqw solid rgba(255,255,255,0.35); animation: bn-blob3 10s ease-in-out infinite; }
+        @keyframes bn-blob1 {
+            0%   { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; transform: translate(0,0) rotate(0deg) scale(1); }
+            25%  { border-radius: 70% 30% 46% 54% / 30% 65% 35% 70%; transform: translate(-8%,8%) rotate(45deg) scale(1.05); }
+            50%  { border-radius: 30% 70% 35% 65% / 60% 30% 70% 40%; transform: translate(5%,12%) rotate(90deg) scale(0.95); }
+            75%  { border-radius: 55% 45% 60% 40% / 40% 55% 45% 60%; transform: translate(-6%,-6%) rotate(135deg) scale(1.08); }
+            100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; transform: translate(0,0) rotate(180deg) scale(1); }
+        }
+        @keyframes bn-blob2 {
+            0%   { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(0,0) rotate(0deg) scale(1); }
+            25%  { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(12%,-10%) rotate(-45deg) scale(1.1); }
+            50%  { border-radius: 50% 50% 40% 60% / 40% 50% 60% 50%; transform: translate(-6%,-14%) rotate(-90deg) scale(0.9); }
+            75%  { border-radius: 40% 60% 55% 45% / 65% 35% 60% 40%; transform: translate(10%,6%) rotate(-135deg) scale(1.05); }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(0,0) rotate(-180deg) scale(1); }
+        }
+        @keyframes bn-blob3 {
+            0%   { border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%; transform: rotate(0deg) scale(1); opacity: 0.6; }
+            33%  { border-radius: 65% 35% 40% 60% / 35% 60% 40% 65%; transform: rotate(120deg) scale(1.2); opacity: 0.35; }
+            66%  { border-radius: 35% 65% 55% 45% / 60% 40% 65% 35%; transform: rotate(240deg) scale(0.9); opacity: 0.55; }
+            100% { border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%; transform: rotate(360deg) scale(1); opacity: 0.6; }
+        }
+        .banner-v1 .badge { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: #fff; }
+        .banner-v1 .title, .banner-v1 .title span { color: #fff; }
+        .banner-v1 .subtitle { color: #fff; }
+        .banner-v1 .cta { background: #fff; color: #667eea; }
+
+        /* ==========================================================
+           2. SUNSET WAVES
+           ========================================================== */
+        .banner-v2 { background: linear-gradient(180deg, #ff6b6b 0%, #ffa500 50%, #ffd93d 100%); }
+        .banner-v2 .wave {
+            position: absolute; left: -10%; width: 120%;
+            border-radius: 50%; background: rgba(255,255,255,0.15);
+            animation: bn-wave 8s ease-in-out infinite;
+        }
+        .banner-v2 .wave-1 { bottom: -25cqw; height: 40cqw; animation-delay: 0s; }
+        .banner-v2 .wave-2 { bottom: -30cqw; height: 42cqw; background: rgba(255,255,255,0.1); animation-delay: -3s; }
+        .banner-v2 .wave-3 { bottom: -35cqw; height: 44cqw; background: rgba(255,255,255,0.08); animation-delay: -6s; }
+        .banner-v2 .sun {
+            position: absolute; top: 12%; right: 10%;
+            width: 22cqw; height: 22cqw; border-radius: 50%;
+            background: radial-gradient(circle, #fff5b8, #ffd93d);
+            box-shadow: 0 0 8cqw rgba(255, 217, 61, 0.6);
+            animation: bn-sun 6s ease-in-out infinite;
+        }
+        @keyframes bn-wave {
+            0%,100% { transform: translateX(0) rotate(-2deg); }
+            50%     { transform: translateX(3%) rotate(2deg); }
+        }
+        @keyframes bn-sun {
+            0%,100% { transform: scale(1); }
+            50%     { transform: scale(1.1); }
+        }
+        .banner-v2 .badge { background: rgba(0,0,0,0.25); color: #fff; }
+        .banner-v2 .title, .banner-v2 .title span { color: #fff; text-shadow: 0 0.4cqw 1cqw rgba(0,0,0,0.15); }
+        .banner-v2 .subtitle { color: #fff; }
+        .banner-v2 .cta { background: #fff; color: #ff6b6b; }
+
+        /* ==========================================================
+           3. NEON CYBERPUNK
+           ========================================================== */
+        .banner-v3 { background: #0a0a1e; }
+        .banner-v3 .grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.15) 1px, transparent 1px);
+            background-size: 8cqw 8cqw;
+            transform: perspective(50cqw) rotateX(45deg);
+            transform-origin: center bottom;
+            animation: bn-grid-move 4s linear infinite;
+        }
+        @keyframes bn-grid-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 8cqw; }
+        }
+        .banner-v3 .glow {
+            position: absolute; width: 40cqw; height: 40cqw;
+            border-radius: 50%; filter: blur(8cqw); opacity: 0.6;
+        }
+        .banner-v3 .glow-1 { top: -10cqw; left: -10cqw; background: #ff006e; animation: bn-glow 5s ease-in-out infinite; }
+        .banner-v3 .glow-2 { bottom: -10cqw; right: -10cqw; background: #00fff0; animation: bn-glow 5s ease-in-out infinite -2.5s; }
+        @keyframes bn-glow {
+            0%,100% { opacity: 0.4; transform: scale(1); }
+            50%     { opacity: 0.8; transform: scale(1.15); }
+        }
+        .banner-v3 .badge { background: transparent; color: #00fff0; border: 0.3cqw solid #00fff0; box-shadow: 0 0 2cqw rgba(0,255,240,0.5); }
+        .banner-v3 .title, .banner-v3 .title span { color: #fff; text-shadow: 0 0 2cqw #ff006e, 0 0 4cqw #ff006e; }
+        .banner-v3 .subtitle { color: #b8b8d0; }
+        .banner-v3 .cta { background: #ff006e; color: #fff; box-shadow: 0 0 3cqw rgba(255,0,110,0.6); }
+
+        /* ==========================================================
+           4. MINIMAL LIGHT
+           ========================================================== */
+        .banner-v4 { background: #f5f3f0; }
+        .banner-v4 .line { position: absolute; background: #1a1a1a; }
+        .banner-v4 .line-1 { top: 20%; right: 8%; width: 0.4cqw; height: 60%; transform: rotate(15deg); animation: bn-line 4s ease-in-out infinite; }
+        .banner-v4 .line-2 { top: 20%; right: 15%; width: 0.4cqw; height: 60%; background: #ff5c39; transform: rotate(-10deg); animation: bn-line 4s ease-in-out infinite -1s; }
+        .banner-v4 .line-3 { top: 15%; right: 22%; width: 0.4cqw; height: 70%; transform: rotate(25deg); animation: bn-line 4s ease-in-out infinite -2s; }
+        .banner-v4 .dot-big { position: absolute; top: 15%; right: 30%; width: 12cqw; height: 12cqw; border-radius: 50%; background: #ff5c39; animation: bn-dot-pulse 3s ease-in-out infinite; }
+        @keyframes bn-line {
+            0%,100% { transform: rotate(var(--r, 15deg)) scaleY(1); }
+            50%     { transform: rotate(var(--r, 15deg)) scaleY(1.2); }
+        }
+        @keyframes bn-dot-pulse {
+            0%,100% { transform: scale(1); }
+            50%     { transform: scale(1.15); }
+        }
+        .banner-v4 .badge { background: #1a1a1a; color: #f5f3f0; }
+        .banner-v4 .title, .banner-v4 .title span { color: #1a1a1a; }
+        .banner-v4 .subtitle { color: #666; }
+        .banner-v4 .cta { background: #1a1a1a; color: #f5f3f0; }
+
+        /* ==========================================================
+           5. OCEAN BUBBLES
+           ========================================================== */
+        .banner-v5 { background: linear-gradient(180deg, #0a2a4e 0%, #1e6091 60%, #4cc9f0 100%); }
+        .banner-v5 .bubble {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.05) 70%);
+            animation: bn-bubble 10s ease-in infinite; bottom: -10cqw;
+        }
+        .banner-v5 .bubble:nth-child(1) { left: 10%; width: 6cqw; height: 6cqw; animation-delay: 0s; }
+        .banner-v5 .bubble:nth-child(2) { left: 25%; width: 9cqw; height: 9cqw; animation-delay: -2s; }
+        .banner-v5 .bubble:nth-child(3) { left: 45%; width: 5cqw; height: 5cqw; animation-delay: -4s; }
+        .banner-v5 .bubble:nth-child(4) { left: 65%; width: 8cqw; height: 8cqw; animation-delay: -6s; }
+        .banner-v5 .bubble:nth-child(5) { left: 82%; width: 6cqw; height: 6cqw; animation-delay: -8s; }
+        .banner-v5 .bubble:nth-child(6) { left: 92%; width: 4cqw; height: 4cqw; animation-delay: -5s; }
+        @keyframes bn-bubble {
+            0%   { transform: translateY(0) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-60cqw) scale(1.1); opacity: 0; }
+        }
+        .banner-v5 .badge { background: rgba(255,255,255,0.2); color: #fff; backdrop-filter: blur(6px); }
+        .banner-v5 .title, .banner-v5 .title span { color: #fff; }
+        .banner-v5 .subtitle { color: #cce6ff; }
+        .banner-v5 .cta { background: #4cc9f0; color: #0a2a4e; }
+
+        /* ==========================================================
+           6. MINT FRESH
+           ========================================================== */
+        .banner-v6 { background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%); }
+        .banner-v6 .circle-soft {
+            position: absolute; border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            animation: bn-circle-soft 10s ease-in-out infinite;
+        }
+        .banner-v6 .cs-1 { width: 30cqw; height: 30cqw; top: -8cqw; right: -5cqw; background: rgba(255,255,255,0.18); animation-delay: 0s; }
+        .banner-v6 .cs-2 { width: 20cqw; height: 20cqw; top: 30%; right: 20%; animation-delay: -3s; }
+        .banner-v6 .cs-3 { width: 14cqw; height: 14cqw; bottom: -4cqw; right: 40%; animation-delay: -6s; }
+        .banner-v6 .cs-4 { width: 10cqw; height: 10cqw; bottom: 15%; right: 8%; background: rgba(255,255,255,0.2); animation-delay: -8s; }
+        @keyframes bn-circle-soft {
+            0%,100% { transform: translate(0,0) scale(1); }
+            50%     { transform: translate(-3cqw, 3cqw) scale(1.15); }
+        }
+        .banner-v6 .badge { background: rgba(255,255,255,0.25); color: #fff; backdrop-filter: blur(8px); }
+        .banner-v6 .title, .banner-v6 .title span { color: #fff; }
+        .banner-v6 .subtitle { color: #d4f5e8; }
+        .banner-v6 .cta { background: #fff; color: #185a9d; }
+
+        /* ==========================================================
+           7. ROSE GOLD
+           ========================================================== */
+        .banner-v7 { background: linear-gradient(135deg, #ee9ca7 0%, #ffdde1 50%, #f8c8d4 100%); }
+        .banner-v7 .ribbon {
+            position: absolute; left: -20%; width: 140%; height: 30cqw;
+            border-radius: 50%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: bn-ribbon 10s ease-in-out infinite;
+        }
+        .banner-v7 .ribbon-1 { bottom: -15cqw; animation-delay: 0s; }
+        .banner-v7 .ribbon-2 { bottom: -20cqw; background: linear-gradient(90deg, transparent, rgba(238,156,167,0.6), transparent); animation-delay: -4s; }
+        .banner-v7 .ribbon-3 { bottom: -25cqw; background: linear-gradient(90deg, transparent, rgba(216,120,140,0.5), transparent); animation-delay: -8s; }
+        @keyframes bn-ribbon {
+            0%,100% { transform: translateX(-5%) rotate(-1deg) scaleY(1); }
+            50%     { transform: translateX(5%) rotate(1deg) scaleY(1.15); }
+        }
+        .banner-v7 .badge { background: rgba(255,255,255,0.7); color: #b84a68; }
+        .banner-v7 .title, .banner-v7 .title span { color: #6b1f3a; }
+        .banner-v7 .subtitle { color: #8b4a5c; }
+        .banner-v7 .cta { background: #6b1f3a; color: #fff; }
+
+        /* ==========================================================
+           8. AURORA SILK
+           ========================================================== */
+        .banner-v8 { background: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%); }
+        .banner-v8 .silk {
+            position: absolute; top: -10%; left: -20%;
+            width: 140%; height: 60%;
+            border-radius: 50%;
+            filter: blur(6cqw);
+            animation: bn-silk 12s ease-in-out infinite;
+        }
+        .banner-v8 .silk-1 {
+            background: linear-gradient(90deg, transparent, rgba(0,255,180,0.5), transparent);
+        }
+        .banner-v8 .silk-2 {
+            top: 20%; left: -10%;
+            background: linear-gradient(90deg, transparent, rgba(100,150,255,0.5), transparent);
+            animation-delay: -6s;
+        }
+        @keyframes bn-silk {
+            0%,100% { transform: translateX(-10%) skewY(-4deg); }
+            50%     { transform: translateX(10%) skewY(4deg); }
+        }
+        .banner-v8 .dot8 {
+            position: absolute; width: 0.5cqw; height: 0.5cqw;
+            background: #fff; border-radius: 50%;
+            animation: bn-dot8 3s ease-in-out infinite;
+        }
+        .banner-v8 .dot8:nth-child(3) { top: 15%; left: 25%; animation-delay: 0s; }
+        .banner-v8 .dot8:nth-child(4) { top: 25%; left: 65%; animation-delay: -1s; }
+        .banner-v8 .dot8:nth-child(5) { top: 65%; left: 40%; animation-delay: -2s; }
+        @keyframes bn-dot8 {
+            0%,100% { opacity: 0.3; transform: scale(1); }
+            50%     { opacity: 1; transform: scale(1.5); }
+        }
+        .banner-v8 .badge { background: rgba(0,255,180,0.2); color: #00ffb4; }
+        .banner-v8 .title, .banner-v8 .title span { color: #fff; }
+        .banner-v8 .subtitle { color: #a8d4e6; }
+        .banner-v8 .cta { background: #00ffb4; color: #0f2027; }
+
+        /* ==========================================================
+           9. SOFT LAVENDER
+           ========================================================== */
+        .banner-v9 { background: linear-gradient(135deg, #d3cce3 0%, #e9e4f0 100%); }
+        .banner-v9 .orb {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff, #b8a8d8 80%);
+            filter: blur(0.5cqw);
+            animation: bn-orb 8s ease-in-out infinite;
+        }
+        .banner-v9 .orb-1 { top: 10%; right: 8%; width: 14cqw; height: 14cqw; opacity: 0.7; animation-delay: 0s; }
+        .banner-v9 .orb-2 { top: 40%; right: 25%; width: 8cqw; height: 8cqw; opacity: 0.6; animation-delay: -2s; }
+        .banner-v9 .orb-3 { bottom: 12%; right: 12%; width: 10cqw; height: 10cqw; opacity: 0.5; animation-delay: -4s; }
+        .banner-v9 .orb-4 { top: 20%; right: 45%; width: 6cqw; height: 6cqw; opacity: 0.5; animation-delay: -6s; }
+        @keyframes bn-orb {
+            0%,100% { transform: translate(0,0) scale(1); opacity: 0.5; }
+            50%     { transform: translate(-2cqw, -3cqw) scale(1.2); opacity: 0.9; }
+        }
+        .banner-v9 .badge { background: #6b5b95; color: #fff; }
+        .banner-v9 .title, .banner-v9 .title span { color: #3d2d5c; }
+        .banner-v9 .subtitle { color: #6b5b95; }
+        .banner-v9 .cta { background: #6b5b95; color: #fff; }
+
+        /* ==========================================================
+           10. DEEP FOREST
+           ========================================================== */
+        .banner-v10 { background: linear-gradient(135deg, #134e5e 0%, #071e28 100%); }
+        .banner-v10 .firefly {
+            position: absolute; width: 1cqw; height: 1cqw;
+            border-radius: 50%;
+            background: radial-gradient(circle, #a8e063, #56ab2f);
+            box-shadow: 0 0 2cqw #a8e063;
+            animation: bn-firefly 6s ease-in-out infinite;
+        }
+        .banner-v10 .ff-1 { top: 20%; left: 15%; animation-delay: 0s; }
+        .banner-v10 .ff-2 { top: 60%; left: 25%; animation-delay: -1s; width: 1.4cqw; height: 1.4cqw; }
+        .banner-v10 .ff-3 { top: 30%; left: 55%; animation-delay: -2s; }
+        .banner-v10 .ff-4 { top: 70%; left: 45%; animation-delay: -3s; width: 0.8cqw; height: 0.8cqw; }
+        .banner-v10 .ff-5 { top: 15%; left: 75%; animation-delay: -4s; width: 1.2cqw; height: 1.2cqw; }
+        .banner-v10 .ff-6 { top: 50%; left: 85%; animation-delay: -5s; }
+        @keyframes bn-firefly {
+            0%,100% { transform: translate(0,0); opacity: 0.3; }
+            25%     { transform: translate(3cqw, -2cqw); opacity: 1; }
+            50%     { transform: translate(-2cqw, -4cqw); opacity: 0.7; }
+            75%     { transform: translate(2cqw, -2cqw); opacity: 1; }
+        }
+        .banner-v10 .badge { background: rgba(168,224,99,0.2); color: #a8e063; border: 0.2cqw solid #a8e063; }
+        .banner-v10 .title, .banner-v10 .title span { color: #fff; }
+        .banner-v10 .subtitle { color: #a8e063; }
+        .banner-v10 .cta { background: #a8e063; color: #071e28; }
     </style>
 </head>
 <body>
     <div class="player">
         <h1>ENJOY</h1>
         <h2>the music</h2>
-        <!-- Слайдер вместо гифки -->
-        <!-- <label>You are listening to the best music!</label> -->
         
-        <div class="slider-container">
+        <div class="slider-container" id="sliderContainer">
             <div class="slider" id="slider">
-                <div class="slider-item">
-                    <img src="car.gif" alt="Relaxing 1">
+
+                <!-- 1 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v1">
+                        <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+                        <div class="shine"></div>
+                        <div class="content">
+                            <div class="badge">Новинка 2026</div>
+                            <h1 class="title"><span>Создай больше</span><br><span>с нашим продуктом</span></h1>
+                            <p class="subtitle">Ускорь работу, автоматизируй задачи</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Узнать больше
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="slider-item">
-                    <img src="junglist.gif" alt="Relaxing 2">
+
+                <!-- 2 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v2">
+                        <div class="sun"></div>
+                        <div class="wave wave-3"></div><div class="wave wave-2"></div><div class="wave wave-1"></div>
+                        <div class="shine"></div>
+                        <div class="content">
+                            <div class="badge">Лето 2026</div>
+                            <h1 class="title"><span>Тепло каждый</span><br><span>день с нами</span></h1>
+                            <p class="subtitle">Почувствуй летнее настроение</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Смотреть
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="slider-item">
-                    <img src="car.gif" alt="Relaxing 1">
+
+                <!-- 3 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v3">
+                        <div class="glow glow-1"></div><div class="glow glow-2"></div>
+                        <div class="grid"></div>
+                        <div class="shine"></div>
+                        <div class="content">
+                            <div class="badge">FUTURE TECH</div>
+                            <h1 class="title"><span>Впереди</span><br><span>будущего</span></h1>
+                            <p class="subtitle">Технологии нового поколения</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Explore
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="slider-item">
-                    <img src="junglist.gif" alt="Relaxing 2">
+
+                <!-- 4 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v4">
+                        <div class="dot-big"></div>
+                        <div class="line line-1" style="--r:15deg"></div>
+                        <div class="line line-2" style="--r:-10deg"></div>
+                        <div class="line line-3" style="--r:25deg"></div>
+                        <div class="content">
+                            <div class="badge">PRODUCT</div>
+                            <h1 class="title"><span>Просто.</span><br><span>Удобно.</span></h1>
+                            <p class="subtitle">Минимализм в каждой детали</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Подробнее
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="slider-item">
-                    <img src="car.gif" alt="Relaxing 1">
+
+                <!-- 5 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v5">
+                        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+                        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+                        <div class="shine"></div>
+                        <div class="content">
+                            <div class="badge">DEEP DIVE</div>
+                            <h1 class="title"><span>Погрузись</span><br><span>в глубину</span></h1>
+                            <p class="subtitle">Открой мир под водой</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Начать
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="slider-item">
-                    <img src="junglist.gif" alt="Relaxing 2">
+
+                <!-- 6 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v6">
+                        <div class="circle-soft cs-1"></div>
+                        <div class="circle-soft cs-2"></div>
+                        <div class="circle-soft cs-3"></div>
+                        <div class="circle-soft cs-4"></div>
+                        <div class="shine"></div>
+                        <div class="content">
+                            <div class="badge">FRESH START</div>
+                            <h1 class="title"><span>Свежий</span><br><span>взгляд</span></h1>
+                            <p class="subtitle">Начни день с нового ритма</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Начать
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="slider-item">
-                    <img src="car.gif" alt="Relaxing 1">
+
+                <!-- 7 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v7">
+                        <div class="ribbon ribbon-3"></div>
+                        <div class="ribbon ribbon-2"></div>
+                        <div class="ribbon ribbon-1"></div>
+                        <div class="shine"></div>
+                        <div class="content">
+                            <div class="badge">NEW VIBE</div>
+                            <h1 class="title"><span>Мягкий</span><br><span>ритм дня</span></h1>
+                            <p class="subtitle">Ощути лёгкость каждого момента</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Слушать
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="slider-item">
-                    <img src="junglist.gif" alt="Relaxing 2">
+
+                <!-- 8 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v8">
+                        <div class="silk silk-1"></div>
+                        <div class="silk silk-2"></div>
+                        <div class="dot8"></div><div class="dot8"></div><div class="dot8"></div>
+                        <div class="shine"></div>
+                        <div class="content">
+                            <div class="badge">NIGHT MODE</div>
+                            <h1 class="title"><span>Северный</span><br><span>ветер</span></h1>
+                            <p class="subtitle">Атмосфера ночного эфира</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Включить
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="slider-item">
-                    <img src="car.gif" alt="Relaxing 1">
+
+                <!-- 9 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v9">
+                        <div class="orb orb-1"></div>
+                        <div class="orb orb-2"></div>
+                        <div class="orb orb-3"></div>
+                        <div class="orb orb-4"></div>
+                        <div class="shine"></div>
+                        <div class="content">
+                            <div class="badge">CALM MODE</div>
+                            <h1 class="title"><span>Тихая</span><br><span>волна</span></h1>
+                            <p class="subtitle">Расслабься и слушай музыку</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Погрузиться
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="slider-item">
-                    <img src="junglist.gif" alt="Relaxing 2">
+
+                <!-- 10 -->
+                <div class="slider-item banner-slide">
+                    <div class="banner banner-v10">
+                        <div class="firefly ff-1"></div>
+                        <div class="firefly ff-2"></div>
+                        <div class="firefly ff-3"></div>
+                        <div class="firefly ff-4"></div>
+                        <div class="firefly ff-5"></div>
+                        <div class="firefly ff-6"></div>
+                        <div class="shine"></div>
+                        <div class="content">
+                            <div class="badge">NIGHT RADIO</div>
+                            <h1 class="title"><span>Лесные</span><br><span>огоньки</span></h1>
+                            <p class="subtitle">Звуки природы в прямом эфире</p>
+                            <a class="cta" data-link="https://t.me/audiomarketer">Слушать
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                
-                
+
             </div>
         </div>
-        
-        <!-- Индикаторы (точки) -->
-        <div class="slider-dots" id="sliderDots"></div>
         
         <p>
             <button id="play-pause">play</button>
         </p>
         
-
         <div class="label">songs of faith and devotion</div>
         <div>
             <input type="range" id="volume" min="0" max="1" step="0.001" value="0.7" />
@@ -224,7 +728,6 @@
     <audio id="audio" src="https://synthwave.stream.laut.fm/synthwave"></audio>
 
     <script>
-        // Инициализация Telegram WebApp
         const tg = window.Telegram?.WebApp;
         tg.ready();
 
@@ -235,13 +738,11 @@
 
         let isPlaying = false;
 
-        // Громкость
         audio.volume = volumeControl.value;
         volumeControl.addEventListener('input', () => {
             audio.volume = volumeControl.value;
         });
 
-        // Статус
         function updateStatus(online) {
             if (online) {
                 status.innerHTML = '<span class="online">on air</span>';
@@ -250,7 +751,6 @@
             }
         }
 
-        // Проверка статуса потока
         function checkStream() {
             fetch('https://synthwave.stream.laut.fm/synthwave', { method: 'HEAD', mode: 'no-cors' })
                 .then(() => updateStatus(true))
@@ -259,7 +759,6 @@
         checkStream();
         setInterval(checkStream, 30000);
 
-        // Play / Pause
         playPauseBtn.addEventListener('click', () => {
             if (isPlaying) {
                 audio.pause();
@@ -279,93 +778,195 @@
             }
         });
 
-        // ========== ЛОГИКА СЛАЙДЕРА ==========
-        const slider = document.getElementById('slider');
-        const dotsContainer = document.getElementById('sliderDots');
-        
-        const items = document.querySelectorAll('.slider-item');
-        const totalItems = items.length;
-        let currentIndex = 0;
-        let autoSlideInterval;
+        // ============================================================
+        // КЛИКИ ПО CTA → ОТКРЫТЬ TELEGRAM-ПРОФИЛЬ (делегирование)
+        // ============================================================
+        document.getElementById('slider').addEventListener('click', (e) => {
+            const cta = e.target.closest('.cta');
+            if (!cta) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const url = cta.dataset.link;
+            if (!url) return;
 
-        // Создаем точки-индикаторы
-        items.forEach((_, index) => {
-            const dot = document.createElement('span');
-            dot.classList.add('dot');
-            dot.addEventListener('click', () => goToSlide(index));
-            dotsContainer.appendChild(dot);
+            try { tg.HapticFeedback.impactOccurred('medium'); } catch(_) {}
+
+            if (tg && typeof tg.openLink === 'function') {
+                tg.openLink(url);
+            } else {
+                window.open(url, '_blank');
+            }
         });
 
-        const dots = document.querySelectorAll('.dot');
+        // ============================================================
+        // БЕСКОНЕЧНЫЙ СЛАЙДЕР (клонирование первого и последнего)
+        // ============================================================
+        const slider = document.getElementById('slider');
+        const container = document.getElementById('sliderContainer');
 
-        // Обновление активной точки и позиции слайдера
-        function updateSlider() {
-            slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-            
-            dots.forEach((dot, index) => {
-                if (index === currentIndex) {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
-            });
-        }
+        // Собираем только РЕАЛЬНЫЕ слайды (без клонов) — на момент запуска
+        const realSlides = Array.from(slider.querySelectorAll('.slider-item'));
+        const REAL_COUNT = realSlides.length;
 
-        // Переход к определенному слайду
-        function goToSlide(index) {
-            if (index < 0) {
-                currentIndex = totalItems - 1;
-            } else if (index >= totalItems) {
-                currentIndex = 0;
+        // Клонируем первый и последний
+        const firstClone = realSlides[0].cloneNode(true);
+        const lastClone  = realSlides[REAL_COUNT - 1].cloneNode(true);
+
+        firstClone.setAttribute('data-clone', 'first');
+        lastClone.setAttribute('data-clone', 'last');
+
+        // lastClone → в начало, firstClone → в конец
+        slider.insertBefore(lastClone, slider.firstChild);
+        slider.appendChild(firstClone);
+
+        // Итого в DOM: REAL_COUNT + 2 элемента
+        // position = 0              → lastClone
+        // position = 1..REAL_COUNT  → реальные слайды
+        // position = REAL_COUNT + 1 → firstClone
+
+        let position = 1;              // начинаем с первого реального
+        let isTransitioning = false;   // защита от двойных срабатываний
+        const TRANSITION_MS = 500;     // должно совпадать с CSS transition
+        const AUTO_SLIDE_DELAY = 10000; // 10 секунд
+
+        // --- Применение трансформации ---
+        function applyTransform(offsetPx = 0, animate = true) {
+            if (!animate) {
+                slider.classList.add('no-transition');
+                slider.style.transform = `translateX(calc(-${position * 100}% + ${offsetPx}px))`;
+                // Принудительный reflow, чтобы transition не сработал
+                void slider.offsetWidth;
+                slider.classList.remove('no-transition');
             } else {
-                currentIndex = index;
+                slider.style.transform = `translateX(calc(-${position * 100}% + ${offsetPx}px))`;
             }
-            updateSlider();
-            
-            // Легкая вибрация при переключении (для Telegram)
-            tg.HapticFeedback.impactOccurred('light');
         }
 
-        // Следующий слайд (для автоматической смены)
+        // --- Проверка выхода за границы и мгновенный сброс ---
+        function checkLoopReset() {
+            if (position === 0) {
+                position = REAL_COUNT;
+                applyTransform(0, false);
+            } else if (position === REAL_COUNT + 1) {
+                position = 1;
+                applyTransform(0, false);
+            }
+            isTransitioning = false;
+        }
+
+        // --- Навигация ---
         function nextSlide() {
-            goToSlide(currentIndex + 1);
+            if (isTransitioning) return;
+            isTransitioning = true;
+            position++;
+            applyTransform(0, true);
+            setTimeout(checkLoopReset, TRANSITION_MS + 20);
         }
 
-        // Запуск автоматической смены слайдов
+        function prevSlide() {
+            if (isTransitioning) return;
+            isTransitioning = true;
+            position--;
+            applyTransform(0, true);
+            setTimeout(checkLoopReset, TRANSITION_MS + 20);
+        }
+
+        // --- Автопрокрутка ---
+        let autoSlideInterval;
         function startAutoSlide() {
             if (autoSlideInterval) clearInterval(autoSlideInterval);
-            autoSlideInterval = setInterval(nextSlide, 5000); // 5 секунд
+            autoSlideInterval = setInterval(nextSlide, AUTO_SLIDE_DELAY);
         }
-
-        // Остановка автоматической смены (при ручном переключении через точки)
         function stopAutoSlide() {
             clearInterval(autoSlideInterval);
         }
-
-        // Перезапуск автослайда
         function restartAutoSlide() {
             stopAutoSlide();
             startAutoSlide();
         }
 
-        // Модифицируем goToSlide, чтобы перезапускать таймер при клике на точку
-        const originalGoToSlide = goToSlide;
-        goToSlide = function(index) {
-            originalGoToSlide(index);
-            restartAutoSlide(); // Перезапускаем таймер после ручного переключения
-        };
+        // --- Ручной свайп ---
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchCurrentX = 0;
+        let isDragging = false;
+        let isSwiping = false;
+        const SWIPE_THRESHOLD = 50;
 
-        // Обновляем функцию nextSlide для использования новой goToSlide
-        nextSlide = function() {
-            goToSlide(currentIndex + 1);
-        };
+        container.addEventListener('touchstart', (e) => {
+            if (isTransitioning) return;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchCurrentX = touchStartX;
+            isDragging = true;
+            isSwiping = false;
+            slider.classList.add('dragging');
+            stopAutoSlide();
+        }, { passive: true });
 
-        // Инициализация слайдера
-        updateSlider();
+        container.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            touchCurrentX = e.touches[0].clientX;
+            const deltaX = touchCurrentX - touchStartX;
+            const deltaY = e.touches[0].clientY - touchStartY;
+
+            // Вертикальный скролл — отменяем свайп
+            if (!isSwiping && Math.abs(deltaY) > Math.abs(deltaX)) {
+                isDragging = false;
+                slider.classList.remove('dragging');
+                applyTransform(0, false);
+                restartAutoSlide();
+                return;
+            }
+
+            if (Math.abs(deltaX) > 5) isSwiping = true;
+
+            // Визуальное смещение пальцем
+            slider.style.transform = `translateX(calc(-${position * 100}% + ${deltaX}px))`;
+        }, { passive: true });
+
+        container.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            slider.classList.remove('dragging');
+
+            const deltaX = touchCurrentX - touchStartX;
+
+            if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+                if (deltaX < 0) {
+                    // Свайп влево — вперёд
+                    isTransitioning = true;
+                    position++;
+                    applyTransform(0, true);
+                    setTimeout(checkLoopReset, TRANSITION_MS + 20);
+                } else {
+                    // Свайп вправо — назад
+                    isTransitioning = true;
+                    position--;
+                    applyTransform(0, true);
+                    setTimeout(checkLoopReset, TRANSITION_MS + 20);
+                }
+                try { tg.HapticFeedback.impactOccurred('light'); } catch(_) {}
+            } else {
+                // Не досвайпал — возврат на место
+                applyTransform(0, true);
+            }
+
+            restartAutoSlide();
+        });
+
+        container.addEventListener('touchcancel', () => {
+            isDragging = false;
+            slider.classList.remove('dragging');
+            applyTransform(0, true);
+            restartAutoSlide();
+        });
+
+        // --- Инициализация ---
+        // Ставим на первый реальный без анимации
+        position = 1;
+        applyTransform(0, false);
         startAutoSlide();
-
-        // Закрываем веб-апп, но аудио продолжает играть
-        // (Telegram позволяет это!)
     </script>
 </body>
 </html>
